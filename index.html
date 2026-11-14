@@ -32,15 +32,11 @@
   a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   .wrap { max-width: 1080px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
 
-  /* Top bar */
-  .top { display: flex; align-items: center; gap: 12px; padding-top: 24px; padding-bottom: 24px; }
-  .logo { flex: none; width: 40px; height: 40px; display: block; }
-  .name { color: var(--strong); font-weight: 700; font-size: 1.1rem; margin-right: auto; }
-  .top a { font-weight: 600; text-decoration: none; padding: 6px 4px; }
-  .top a + a { margin-left: 16px; }
-
-  /* Hero: words only */
-  .hero { padding-top: 72px; padding-bottom: 64px; text-align: center; }
+  /* Hero: the name and logo, what it does, the downloads */
+  .hero { padding-top: 112px; padding-bottom: 64px; text-align: center; }
+  /* The name with its logo, in place of a headline. */
+  h1.brand { display: inline-flex; align-items: center; gap: .28em; }
+  h1.brand img { flex: none; width: 1em; height: 1em; }
   h1 { color: var(--strong); font-weight: 700; font-size: clamp(2.6rem, 6.4vw, 4.5rem); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
   .lead { font-size: 1.25rem; line-height: 1.5; max-width: 34em; margin: 22px auto 0; }
   .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px; }
@@ -107,7 +103,7 @@
   footer .slint img { display: block; }
 
   @media (max-width: 860px) {
-    .hero { padding-top: 48px; padding-bottom: 48px; }
+    .hero { padding-top: 64px; padding-bottom: 48px; }
     .show { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .stage { width: auto; min-height: 0; }
     .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -128,14 +124,9 @@
 </head>
 <body>
 
-<header class="wrap top">
-  <img class="logo" src="assets/logo.svg" width="40" height="40" alt="">
-  <span class="name">Pocket Door</span>
-</header>
-
 <main>
   <section class="wrap hero">
-    <h1>Your phone and PC, finally on speaking terms</h1>
+    <h1 class="brand"><img src="assets/logo.svg" width="72" height="72" alt="">Pocket Door</h1>
     <p class="lead">Pocket Door links your Android phone to your Windows PC. Reply to notifications, copy and paste
     between them, and browse your phone's photos and files, all over your own Wi-Fi.</p>
     <div class="buttons">
