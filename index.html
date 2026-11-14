@@ -13,13 +13,13 @@
 
   :root {
     --bg: #f7f7f7; --surface: #ffffff; --text: #474747; --strong: #111111; --muted: #666666; --line: #dedede;
-    --accent: #0e7c66; --on-accent: #ffffff; --tint: #dff1ec; --wall: linear-gradient(160deg, #d6efe8 0%, #8fcdbd 45%, #23907a 100%);
+    --accent: #0e7c66; --on-accent: #ffffff; --tint: #dff1ec; --card-line: #cfcfcf; --wall: linear-gradient(160deg, #d6efe8 0%, #8fcdbd 45%, #23907a 100%);
     --shadow: 0 30px 60px -20px rgba(3, 30, 25, .7);
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #1c1c1c; --surface: #222222; --text: #b0b0b0; --strong: #f2f2f2; --muted: #8c8c8c; --line: #343434;
-      --accent: #3fc1a3; --on-accent: #0b1f1a; --tint: #1f3a34; --wall: linear-gradient(160deg, #14584a 0%, #0c3d33 50%, #062720 100%);
+      --accent: #3fc1a3; --on-accent: #0b1f1a; --tint: #1f3a34; --card-line: #454545; --wall: linear-gradient(160deg, #14584a 0%, #0c3d33 50%, #062720 100%);
       --shadow: 0 24px 60px -24px rgba(0, 0, 0, .8);
     }
   }
@@ -50,23 +50,29 @@
   .button svg { flex: none; width: 18px; height: 18px; }
   .under { color: var(--muted); font-size: .95rem; margin-top: 16px; }
 
-  /* The app at its real size: the picture on a tile, and beside it the list that chooses it */
-  .show { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 56px; align-items: center; padding-bottom: 88px; }
+  /* The app at its real size: the list that chooses a picture, and beside it the picture on a tile */
+  .show { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 56px; align-items: center; padding-bottom: 88px; }
   .stage { display: grid; place-items: center; width: 512px; min-height: 540px; padding: 36px; border-radius: 24px; background: var(--wall); }
   .stage figure { display: none; }
   .stage figure.on, .show.plain .stage figure { display: block; }
   .show.plain .stage { gap: 28px; }
   .stage img { display: block; max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 30px 60px -24px rgba(3, 30, 25, .6), 0 0 0 1px rgba(0, 0, 0, .1); }
   .stage img.phone { border-radius: 24px; }
-  .tabs { display: grid; gap: 6px; }
-  .tabs button { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; align-items: center; padding: 16px 18px; border: 1px solid transparent; border-radius: 14px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
-  .tabs button:hover { background: var(--surface); }
-  .tabs button[aria-selected="true"] { background: var(--surface); border-color: var(--line); }
+  .tabs { display: grid; gap: 10px; }
+  .tabs button { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 14px; align-items: center; padding: 16px 18px; border: 1px solid var(--card-line); border-radius: 14px; background: var(--surface); color: var(--text); font: inherit; text-align: left; cursor: pointer; box-shadow: 0 1px 2px rgba(0, 0, 0, .06); transition: border-color .15s, background-color .15s, box-shadow .15s; }
+  .tabs button:hover { border-color: var(--accent); box-shadow: 0 4px 14px -6px rgba(0, 0, 0, .25); }
+  .tabs button[aria-selected="true"] { background: var(--tint); border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); cursor: default; }
   .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .tabs svg { width: 22px; height: 22px; fill: none; stroke: var(--muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
   .tabs button[aria-selected="true"] svg { stroke: var(--accent); }
   .tabs b { color: var(--strong); font-weight: 600; font-size: 1.1rem; }
+  .tabs button[aria-selected="true"] b { color: var(--accent); }
   .tabs span { grid-column: 2; }
+  /* An arrow on the lines not chosen: they show something else. */
+  .tabs button::after { content: ""; grid-column: 3; grid-row: 1 / span 2; width: 8px; height: 8px; border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: rotate(45deg); margin-right: 4px; transition: transform .15s; }
+  .tabs button:hover::after { border-color: var(--accent); transform: translateX(3px) rotate(45deg); }
+  .tabs button[aria-selected="true"]::after { visibility: hidden; }
+  @media (prefers-reduced-motion: reduce) { .tabs button, .tabs button::after { transition: none; } }
 
   /* What it does */
   .does { border-top: 1px solid var(--line); padding-top: 64px; padding-bottom: 72px; }
@@ -102,7 +108,7 @@
   @media (max-width: 860px) {
     .hero { padding-top: 48px; padding-bottom: 48px; }
     .show { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .stage { order: 2; width: auto; min-height: 0; }
+    .stage { width: auto; min-height: 0; }
     .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .columns { grid-template-columns: 1fr; gap: 48px; }
   }
@@ -139,6 +145,12 @@
   </section>
 
   <section class="wrap show plain" id="show" aria-label="What Pocket Door looks like">
+    <div class="tabs" role="tablist" aria-label="What Pocket Door does" aria-orientation="vertical">
+      <button type="button" role="tab" id="tab-notifications" aria-controls="show-notifications" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16ZM10 20.5a2 2 0 0 0 4 0"/></svg><b>Notifications</b><span>Messages pop up by the clock with their reply box and buttons. Answer without picking up your phone.</span></button>
+      <button type="button" role="tab" id="tab-calls" aria-controls="show-calls" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l1.5 4.5-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2L20 15v4a1.5 1.5 0 0 1-1.5 1.5A14.5 14.5 0 0 1 3.5 5.5 1.5 1.5 0 0 1 5 4Z"/></svg><b>Calls</b><span>See who's calling on your PC. What's playing can pause until you hang up.</span></button>
+      <button type="button" role="tab" id="tab-files" aria-controls="show-files" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V8M7 12l5-5 5 5M6 4h12"/></svg><b>Files</b><span>Drag a file to the clock to send it to your phone, or browse the phone's photos and files from your PC.</span></button>
+      <button type="button" role="tab" id="tab-phone" aria-controls="show-phone" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3ZM10.5 17.5h3"/></svg><b>Phone app</b><span>Send a file or your clipboard to the PC, lock it from across the room, and open what the PC sent you.</span></button>
+    </div>
     <div class="stage">
       <figure id="show-notifications" class="on" role="tabpanel" aria-labelledby="tab-notifications">
         <picture>
@@ -164,12 +176,6 @@
           <img class="phone" src="assets/phone-light.png" width="400" height="427" alt="The phone app's home screen: connected to a PC, with Send file, Send clipboard and Lock PC buttons and a list of items from the PC.">
         </picture>
       </figure>
-    </div>
-    <div class="tabs" role="tablist" aria-label="What Pocket Door does" aria-orientation="vertical">
-      <button type="button" role="tab" id="tab-notifications" aria-controls="show-notifications" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16ZM10 20.5a2 2 0 0 0 4 0"/></svg><b>Notifications</b><span>Messages pop up by the clock with their reply box and buttons. Answer without picking up your phone.</span></button>
-      <button type="button" role="tab" id="tab-calls" aria-controls="show-calls" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l1.5 4.5-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2L20 15v4a1.5 1.5 0 0 1-1.5 1.5A14.5 14.5 0 0 1 3.5 5.5 1.5 1.5 0 0 1 5 4Z"/></svg><b>Calls</b><span>See who's calling on your PC. What's playing can pause until you hang up.</span></button>
-      <button type="button" role="tab" id="tab-files" aria-controls="show-files" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V8M7 12l5-5 5 5M6 4h12"/></svg><b>Files</b><span>Drag a file to the clock to send it to your phone, or browse the phone's photos and files from your PC.</span></button>
-      <button type="button" role="tab" id="tab-phone" aria-controls="show-phone" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3ZM10.5 17.5h3"/></svg><b>Phone app</b><span>Send a file or your clipboard to the PC, lock it from across the room, and open what the PC sent you.</span></button>
     </div>
   </section>
 
