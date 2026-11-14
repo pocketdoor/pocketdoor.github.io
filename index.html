@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket Door - your phone, on your PC</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<meta name="description" content="Pocket Door links your Android phone to your Windows PC over your own Wi-Fi. Reply to notifications, copy and paste between them, and browse your phone's photos and files.">
+<style>
+  @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url(assets/Figtree-Regular.ttf) format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 600; font-display: swap; src: url(assets/Figtree-SemiBold.ttf) format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 700; font-display: swap; src: url(assets/Figtree-Bold.ttf) format("truetype"); }
+
+  :root {
+    --bg: #f7f7f7; --surface: #ffffff; --text: #474747; --strong: #111111; --muted: #666666; --line: #dedede;
+    --accent: #0e7c66; --on-accent: #ffffff; --tint: #dff1ec; --wall: linear-gradient(160deg, #d6efe8 0%, #8fcdbd 45%, #23907a 100%);
+    --shadow: 0 30px 60px -20px rgba(3, 30, 25, .7);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1c; --surface: #222222; --text: #b0b0b0; --strong: #f2f2f2; --muted: #8c8c8c; --line: #343434;
+      --accent: #3fc1a3; --on-accent: #0b1f1a; --tint: #1f3a34; --wall: linear-gradient(160deg, #14584a 0%, #0c3d33 50%, #062720 100%);
+      --shadow: 0 24px 60px -24px rgba(0, 0, 0, .8);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font: 17px/1.55 Figtree, "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+
+  /* Top bar */
+  .top { display: flex; align-items: center; gap: 12px; padding-top: 24px; padding-bottom: 24px; }
+  .logo { flex: none; width: 40px; height: 40px; display: block; }
+  .name { color: var(--strong); font-weight: 700; font-size: 1.1rem; margin-right: auto; }
+  .top a { font-weight: 600; text-decoration: none; padding: 6px 4px; }
+  .top a + a { margin-left: 16px; }
+
+  /* Hero: words only */
+  .hero { padding-top: 72px; padding-bottom: 64px; text-align: center; }
+  h1 { color: var(--strong); font-weight: 700; font-size: clamp(2.6rem, 6.4vw, 4.5rem); line-height: 1.04; letter-spacing: -0.03em; }
+  .lead { font-size: 1.25rem; line-height: 1.5; max-width: 34em; margin: 22px auto 0; }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px; }
+  .button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 264px; padding: 13px 22px; border-radius: 10px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; }
+  .button.second { background: transparent; color: var(--accent); }
+  .button:hover { filter: brightness(1.08); }
+  .button:focus-visible { outline-offset: 4px; border-radius: 10px; }
+  .button svg { flex: none; width: 18px; height: 18px; }
+  .under { color: var(--muted); font-size: .95rem; margin-top: 16px; }
+
+  /* The app at its real size: the picture on a tile, and beside it the list that chooses it */
+  .show { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 56px; align-items: center; padding-bottom: 88px; }
+  .stage { display: grid; place-items: center; width: 512px; min-height: 540px; padding: 36px; border-radius: 24px; background: var(--wall); }
+  .stage figure { display: none; }
+  .stage figure.on, .show.plain .stage figure { display: block; }
+  .show.plain .stage { gap: 28px; }
+  .stage img { display: block; max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 30px 60px -24px rgba(3, 30, 25, .6), 0 0 0 1px rgba(0, 0, 0, .1); }
+  .stage img.phone { border-radius: 24px; }
+  .tabs { display: grid; gap: 6px; }
+  .tabs button { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; align-items: center; padding: 16px 18px; border: 1px solid transparent; border-radius: 14px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .tabs button:hover { background: var(--surface); }
+  .tabs button[aria-selected="true"] { background: var(--surface); border-color: var(--line); }
+  .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tabs svg { width: 22px; height: 22px; fill: none; stroke: var(--muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tabs button[aria-selected="true"] svg { stroke: var(--accent); }
+  .tabs b { color: var(--strong); font-weight: 600; font-size: 1.1rem; }
+  .tabs span { grid-column: 2; }
+
+  /* What it does */
+  .does { border-top: 1px solid var(--line); padding-top: 64px; padding-bottom: 72px; }
+  h2 { color: var(--strong); font-weight: 700; font-size: 1.9rem; line-height: 1.15; letter-spacing: -0.015em; }
+  .features { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 48px; margin-top: 40px; }
+  .features svg { color: var(--accent); display: block; }
+  .features h3 { color: var(--strong); font-weight: 600; font-size: 1.1rem; margin-top: 14px; }
+  .features p { margin-top: 4px; }
+
+  /* Install */
+  .install { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .install .wrap { padding-top: 64px; padding-bottom: 64px; }
+  .install .intro { margin-top: 10px; max-width: 38em; }
+  .columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; margin-top: 40px; }
+  .columns h3 { color: var(--strong); font-weight: 600; font-size: 1.2rem; }
+  .columns .button { margin-top: 16px; }
+  .steps { list-style: none; counter-reset: step; margin-top: 24px; display: grid; gap: 14px; }
+  .steps li { counter-increment: step; position: relative; padding-left: 40px; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: -1px; width: 28px; height: 28px; border-radius: 50%; background: var(--tint); color: var(--accent); font-weight: 700; font-size: .9rem; display: flex; align-items: center; justify-content: center; }
+  .steps b { color: var(--strong); font-weight: 600; }
+  .then { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--strong); font-weight: 600; }
+
+  /* Privacy and foot */
+  .private { padding-top: 72px; padding-bottom: 72px; }
+  .private > svg { display: block; color: var(--accent); margin-bottom: 16px; }
+  .private p { font-size: 1.2rem; max-width: 34em; margin-top: 14px; }
+  footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .95rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-top: 24px; padding-bottom: 40px; }
+  footer span { margin-right: auto; }
+  footer .slint { display: inline-flex; }
+  footer .slint img { display: block; }
+
+  @media (max-width: 860px) {
+    .hero { padding-top: 48px; padding-bottom: 48px; }
+    .show { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .stage { order: 2; width: auto; min-height: 0; }
+    .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .columns { grid-template-columns: 1fr; gap: 48px; }
+  }
+  @media (max-width: 520px) {
+    .wrap { padding-left: 16px; padding-right: 16px; }
+    .features { grid-template-columns: 1fr; gap: 28px; }
+    .buttons { display: grid; }
+    .button { min-width: 0; }
+    .stage { padding: 24px 14px; border-radius: 20px; }
+    .tabs button { padding: 12px 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <img class="logo" src="assets/logo.svg" width="40" height="40" alt="">
+  <span class="name">Pocket Door</span>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <h1>Your phone, on your PC</h1>
+    <p class="lead">Pocket Door links your Android phone to your Windows PC. Reply to notifications, copy and paste
+    between them, and browse your phone's photos and files, all over your own Wi-Fi.</p>
+    <div class="buttons">
+      <a class="button" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.exe"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.3 10.5 4v7.5H3V5.3Zm8.5-1.5L21 2.5v9h-9.5V3.8ZM3 12.5h7.5V20L3 18.7v-6.2Zm8.5 0H21v9l-9.5-1.3v-7.7Z"/></svg>Download for Windows</a>
+      <a class="button second" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.apk"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22A11.4 11.4 0 0 0 12 8.1c-1.77 0-3.43.38-4.92 1.04L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg>Download for Android</a>
+    </div>
+    <p class="under">No account needed. You need both apps.</p>
+  </section>
+
+  <section class="wrap show plain" id="show" aria-label="What Pocket Door looks like">
+    <div class="stage">
+      <figure id="show-notifications" class="on" role="tabpanel" aria-labelledby="tab-notifications">
+        <picture>
+          <source srcset="assets/notifications-dark.png" media="(prefers-color-scheme: dark)">
+          <img src="assets/notifications-light.png" width="440" height="460" alt="Phone notifications shown as pop-ups on a PC, one with a reply box and a Mark as read button.">
+        </picture>
+      </figure>
+      <figure id="show-calls" role="tabpanel" aria-labelledby="tab-calls">
+        <picture>
+          <source srcset="assets/calls-dark.png" media="(prefers-color-scheme: dark)">
+          <img src="assets/calls-light.png" width="440" height="427" alt="An incoming call from Priya Sharma shown on a PC above other notifications, with the PC's media paused.">
+        </picture>
+      </figure>
+      <figure id="show-files" role="tabpanel" aria-labelledby="tab-files">
+        <picture>
+          <source srcset="assets/files-dark.png" media="(prefers-color-scheme: dark)">
+          <img src="assets/files-light.png" width="440" height="299" alt="Pocket Door's window on a PC, showing a spreadsheet being sent to the phone with a progress bar.">
+        </picture>
+      </figure>
+      <figure id="show-phone" role="tabpanel" aria-labelledby="tab-phone">
+        <picture>
+          <source srcset="assets/phone-dark.png" media="(prefers-color-scheme: dark)">
+          <img class="phone" src="assets/phone-light.png" width="400" height="427" alt="The phone app's home screen: connected to a PC, with Send file, Send clipboard and Lock PC buttons and a list of items from the PC.">
+        </picture>
+      </figure>
+    </div>
+    <div class="tabs" role="tablist" aria-label="What Pocket Door does" aria-orientation="vertical">
+      <button type="button" role="tab" id="tab-notifications" aria-controls="show-notifications" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16ZM10 20.5a2 2 0 0 0 4 0"/></svg><b>Notifications</b><span>Messages pop up by the clock with their reply box and buttons. Answer without picking up your phone.</span></button>
+      <button type="button" role="tab" id="tab-calls" aria-controls="show-calls" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l1.5 4.5-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2L20 15v4a1.5 1.5 0 0 1-1.5 1.5A14.5 14.5 0 0 1 3.5 5.5 1.5 1.5 0 0 1 5 4Z"/></svg><b>Calls</b><span>See who's calling on your PC. What's playing can pause until you hang up.</span></button>
+      <button type="button" role="tab" id="tab-files" aria-controls="show-files" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V8M7 12l5-5 5 5M6 4h12"/></svg><b>Files</b><span>Drag a file to the clock to send it to your phone, or browse the phone's photos and files from your PC.</span></button>
+      <button type="button" role="tab" id="tab-phone" aria-controls="show-phone" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3ZM10.5 17.5h3"/></svg><b>Phone app</b><span>Send a file or your clipboard to the PC, lock it from across the room, and open what the PC sent you.</span></button>
+    </div>
+  </section>
+
+  <section class="wrap does" aria-labelledby="does">
+    <h2 id="does">What it does</h2>
+    <ul class="features">
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16ZM10 20.5a2 2 0 0 0 4 0"/></svg>
+        <h3>Notifications</h3>
+        <p>Read and reply from your PC, without picking up your phone.</p>
+      </li>
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h10v11H9zM5 15V4h10"/></svg>
+        <h3>Copy and paste</h3>
+        <p>Copy on one device, paste on the other.</p>
+      </li>
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 16l4.5-4.5 4 4 3-3L20 17M9 9.5h.01"/></svg>
+        <h3>Photos and files</h3>
+        <p>Browse your phone from your PC. Drag files to the clock to send them.</p>
+      </li>
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l1.5 4.5-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2L20 15v4a1.5 1.5 0 0 1-1.5 1.5A14.5 14.5 0 0 1 3.5 5.5 1.5 1.5 0 0 1 5 4Z"/></svg>
+        <h3>Calls</h3>
+        <p>See who's calling. Your PC can pause what's playing while you talk.</p>
+      </li>
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M4.5 8.5v7M19.5 8.5v7"/></svg>
+        <h3>Ring your phone</h3>
+        <p>Can't find it? Ring it from your PC.</p>
+      </li>
+      <li>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3M12 14.5v2" stroke-linecap="round"/></svg>
+        <h3>Lock your PC</h3>
+        <p>Left your desk? Lock your PC from your phone.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="install" id="install" aria-labelledby="install-title">
+    <div class="wrap">
+      <h2 id="install-title">Install</h2>
+      <p class="intro">Install Pocket Door on your PC and your phone, then link them with a code. Your browser and
+      device will ask you to confirm each download; the steps below show what to choose.</p>
+      <div class="columns">
+        <div>
+          <h3>On your PC</h3>
+          <a class="button" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.exe"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.3 10.5 4v7.5H3V5.3Zm8.5-1.5L21 2.5v9h-9.5V3.8ZM3 12.5h7.5V20L3 18.7v-6.2Zm8.5 0H21v9l-9.5-1.3v-7.7Z"/></svg>Download for Windows</a>
+          <ol class="steps">
+            <li>If your browser says the file isn't commonly downloaded, choose <b>Keep</b>.</li>
+            <li>Run it. If Windows says it protected your PC, click <b>More info</b>, then <b>Run anyway</b>.</li>
+            <li>Follow Setup. It installs Pocket Door in Program Files, so Windows asks for permission: click <b>Yes</b>.</li>
+            <li>Pocket Door opens and keeps itself up to date. You can turn automatic updates off in its Settings.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>On your phone</h3>
+          <a class="button" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.apk"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22A11.4 11.4 0 0 0 12 8.1c-1.77 0-3.43.38-4.92 1.04L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg>Download for Android</a>
+          <ol class="steps">
+            <li>If Chrome says the file might be harmful, choose <b>Download anyway</b>.</li>
+            <li>Open it, and allow your browser to install apps when Android asks.</li>
+            <li>If Android later says a setting is restricted, open <b>Settings › Apps › Pocket Door</b>, tap <b>⋮</b>,
+            then <b>Allow restricted settings</b>.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="then">Then open Pocket Door on your PC and scan the code it shows with your phone.</p>
+    </div>
+  </section>
+
+  <section class="wrap private" aria-labelledby="private">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 2.5v5.5c0 4.5-2.9 8.3-7 10-4.1-1.7-7-5.500-7-10V5.500L12 3ZM9 12l2.2 2.2L15.2 10"/></svg>
+    <h2 id="private">Your data stays between your devices</h2>
+    <p>Your phone and your PC connect directly to each other over your Wi-Fi, and everything they share is encrypted.
+    There are no accounts and no servers in between.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Pocket Door, for Windows and Android 10 or later</span>
+    <a href="https://github.com/pocketdoor/releases/releases">All releases</a>
+    <a href="privacy/">Privacy policy</a>
+    <a class="slint" href="https://slint.dev" aria-label="Made with Slint"><picture>
+      <source srcset="assets/made-with-slint-dark.svg" media="(prefers-color-scheme: dark)">
+      <img src="assets/made-with-slint-light.svg" alt="Made with Slint" height="28" width="61">
+    </picture></a>
+  </div>
+</footer>
+
+<script>
+  // The showcase: choosing a line shows its picture. Without scripts, every picture shows, one under another.
+  var show = document.getElementById("show");
+  var tabs = [].slice.call(show.querySelectorAll("[role=tab]"));
+  function pick(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).classList.toggle("on", on);
+    });
+  }
+  tabs.forEach(function (tab, i) {
+    tab.onclick = function () { pick(tab); };
+    tab.onkeydown = function (e) {
+      var by = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
+      if (!by) return;
+      e.preventDefault();
+      var to = (i + by + tabs.length) % tabs.length; pick(tabs[to]); tabs[to].focus();
+    };
+  });
+  show.classList.remove("plain"); pick(tabs[0]);
+</script>
+
+</body>
+</html>

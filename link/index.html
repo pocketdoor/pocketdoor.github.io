@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Link your phone - Pocket Door</title>
+<style>
+  :root {
+    --bg: #f7f7f7; --card: #ffffff; --text: #474747; --strong: #111111; --muted: #666666; --line: #dadada;
+    --accent: #0e7c66; --on-accent: #ffffff; --door: #fad02e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1c1c; --card: #222222; --text: #b0b0b0; --strong: #f2f2f2; --muted: #8c8c8c; --line: #343434; --accent: #3fc1a3; --on-accent: #0b1f1a; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--text); font: 16px/1.55 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  }
+  main { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  section { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .logo { position: relative; width: 72px; height: 72px; border-radius: 20px; background: #0e7c66; margin-bottom: 6px; }
+  .logo span { position: absolute; left: 23px; top: 14px; width: 26px; height: 44px; border: 2.5px solid #fff; border-radius: 4px; background: #0a5c4c; overflow: hidden; }
+  .logo span::after { content: ""; position: absolute; inset: 0; background: var(--door); animation: open .9s cubic-bezier(.2,0,0,1) .3s both; }
+  @keyframes open { from { transform: translateX(0); } to { transform: translateX(68%); } }
+  @media (prefers-reduced-motion: reduce) { .logo span::after { animation: none; transform: translateX(68%); } }
+  h1 { color: var(--strong); font-size: 1.45rem; line-height: 1.25; }
+  .button {
+    display: block; width: 100%; padding: 14px 20px; border-radius: 999px; background: var(--accent); color: var(--on-accent);
+    font-weight: 600; text-decoration: none; margin-top: 10px;
+  }
+  .quiet { color: var(--accent); font-weight: 600; text-decoration: none; padding: 8px; }
+  .small { font-size: .9rem; color: var(--muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true"><span></span></div>
+
+  <!-- An Android phone with a PC's code: Pocket Door opens with it, or the phone goes to get Pocket Door. -->
+  <section id="link" hidden>
+    <h1>Opening Pocket Door…</h1>
+    <p>If it doesn't open, tap Open Pocket Door. Don't have it yet? Get it first, then scan the code again.</p>
+    <a class="button" id="open" href="#">Open Pocket Door</a>
+    <a class="quiet" id="get" href="../#get">Get Pocket Door</a>
+  </section>
+
+  <!-- Any other phone or computer. -->
+  <section id="other" hidden>
+    <h1>Pocket Door is for Android phones</h1>
+    <p>Scan the code on your PC with your Android phone's camera.</p>
+    <a class="quiet" href="../">What is Pocket Door?</a>
+  </section>
+
+  <!-- No code: someone came here by hand. -->
+  <section id="nocode" hidden>
+    <h1>Link your phone to your PC</h1>
+    <p>Open Pocket Door on your PC and scan the code it shows with your phone's camera.</p>
+    <a class="quiet" href="../">What is Pocket Door?</a>
+  </section>
+</main>
+<script>
+  // Where a phone without Pocket Door goes: the home page's downloads. Were it ever on Google Play,
+  // then: https://play.google.com/store/apps/details?id=com.pocketdoor
+  var STORE = new URL("../#get", location.href).href;
+
+  // The PC's code is after #, which the browser never sends to this site. Only its own characters are passed on.
+  var fields = location.hash.slice(1);
+  var isCode = /^[A-Za-z0-9%._~=&-]+$/.test(fields) && /(^|&)v=\d+(&|$)/.test(fields) && /(^|&)s=[^&]+/.test(fields);
+  var android = /Android/i.test(navigator.userAgent);
+
+  if (!isCode) {
+    document.getElementById("nocode").hidden = false;
+  } else if (!android) {
+    document.getElementById("other").hidden = false;
+  } else {
+    // Chrome opens Pocket Door with the code, or goes to the store when it isn't installed.
+    var open = "intent://pair?" + fields + "#Intent;scheme=pocketdoor;package=com.pocketdoor;S.browser_fallback_url="
+      + encodeURIComponent(STORE) + ";end";
+    document.getElementById("open").href = open;
+    document.getElementById("get").href = STORE;
+    document.getElementById("link").hidden = false;
+    // Try straight away; some browsers only open apps from a tap, which the buttons are for (Back returns to them).
+    location.href = open;
+  }
+</script>
+</body>
+</html>

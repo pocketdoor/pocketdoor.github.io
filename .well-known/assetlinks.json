@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.pocketdoor",
+      "sha256_cert_fingerprints": [
+        "F4:B0:7F:F9:0A:97:02:D4:E0:C6:7D:B4:39:B1:92:99:03:3C:15:AC:F6:B3:01:36:72:12:11:06:BF:AB:13:C3",
+        "1B:D9:B9:1C:B9:49:EE:F0:15:D5:1E:E5:36:47:87:E4:29:AA:68:19:61:C5:25:07:13:52:0E:18:E3:74:BC:81"
+      ]
+    }
+  }
+]
