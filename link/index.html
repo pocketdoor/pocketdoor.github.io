@@ -46,7 +46,7 @@
     <h1>Opening Pocket Door…</h1>
     <p>If it doesn't open, tap Open Pocket Door. Don't have it yet? Get it first, then scan the code again.</p>
     <a class="button" id="open" href="#">Open Pocket Door</a>
-    <a class="quiet" id="get" href="../#get">Get Pocket Door</a>
+    <a class="quiet" id="get" href="../#install">Get Pocket Door</a>
   </section>
 
   <!-- Any other phone or computer. -->
@@ -66,7 +66,7 @@
 <script>
   // Where a phone without Pocket Door goes: the home page's downloads. Were it ever on Google Play,
   // then: https://play.google.com/store/apps/details?id=com.pocketdoor
-  var STORE = new URL("../#get", location.href).href;
+  var STORE = new URL("../#install", location.href).href;
 
   // The PC's code is after #, which the browser never sends to this site. Only its own characters are passed on.
   var fields = location.hash.slice(1);
