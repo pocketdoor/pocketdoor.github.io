@@ -32,7 +32,7 @@
   a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   .wrap { max-width: 1080px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
 
-  /* Hero: the name and logo, what it does, the downloads */
+  /* Hero: the name and logo, what it does, the call to action */
   .hero { padding-top: 112px; padding-bottom: 64px; text-align: center; }
   /* The name with its logo, in place of a headline. */
   h1.brand { display: inline-flex; align-items: center; gap: .28em; }
@@ -41,7 +41,7 @@
   .lead { font-size: 1.25rem; line-height: 1.5; max-width: 34em; margin: 22px auto 0; }
   .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px; }
   .button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 264px; padding: 13px 22px; border-radius: 10px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; }
-  .button.second { background: transparent; color: var(--accent); }
+  .hero .button { min-width: 220px; padding: 13px 32px; }
   .button:hover { filter: brightness(1.08); }
   .button:focus-visible { outline-offset: 4px; border-radius: 10px; }
   .button svg { flex: none; width: 18px; height: 18px; }
@@ -112,7 +112,7 @@
   @media (max-width: 520px) {
     .wrap { padding-left: 16px; padding-right: 16px; }
     .features { grid-template-columns: 1fr; gap: 28px; }
-    .buttons { display: grid; }
+    .columns .button { width: 100%; }
     .button { min-width: 0; }
     .stage { padding: 24px 14px; border-radius: 20px; }
     .tabs button { padding: 12px 12px; }
@@ -130,8 +130,7 @@
     <p class="lead">Pocket Door links your Android phone to your Windows 11 PC. Reply to notifications, copy and paste
     between them, and browse your phone's photos and files, all over your own Wi-Fi.</p>
     <div class="buttons">
-      <a class="button" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.exe"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.3 10.5 4v7.5H3V5.3Zm8.5-1.5L21 2.5v9h-9.5V3.8ZM3 12.5h7.5V20L3 18.7v-6.2Zm8.5 0H21v9l-9.5-1.3v-7.7Z"/></svg>Download for Windows</a>
-      <a class="button second" href="https://github.com/pocketdoor/releases/releases/latest/download/PocketDoor.apk"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22A11.4 11.4 0 0 0 12 8.1c-1.77 0-3.43.38-4.92 1.04L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52ZM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"/></svg>Download for Android</a>
+      <a class="button" href="#install">Get Pocket Door</a>
     </div>
     <p class="under">For Windows 11 and Android 10 or later. No account needed.</p>
   </section>
