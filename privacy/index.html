@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pocket Door - Privacy Policy</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
 <meta name="description" content="What Pocket Door reads on your phone, where it goes, and what it keeps.">
 <style>
   :root {
@@ -24,14 +25,18 @@
   p, li { margin-bottom: 10px; }
   ul { padding-left: 22px; }
   a { color: var(--accent); }
+  .back { margin-bottom: 18px; font-size: .95rem; }
+  .back a { text-decoration: none; font-weight: 600; }
+  .back a:hover { text-decoration: underline; }
   .muted { color: var(--muted); font-size: .92rem; }
   @media (max-width: 560px) { main { padding: 24px 18px; } h1 { font-size: 1.5rem; } }
 </style>
 </head>
 <body>
 <main>
+  <p class="back"><a href="../">← Back to Pocket Door</a></p>
   <h1>Pocket Door privacy policy</h1>
-  <p class="date">Effective 18 November 2026</p>
+  <p class="date">Effective 19 November 2026</p>
 
   <div class="short">
     <p><strong>In short:</strong> Pocket Door links your Android phone to your own Windows PC. What it reads on your phone
@@ -109,17 +114,21 @@
     <li><strong>Start at boot:</strong> so the link to your PC comes back after the phone restarts.</li>
     <li><strong>Running in the background:</strong> if you allow it, Android doesn't pause Pocket Door to save battery,
     so your PC can always reach your phone.</li>
+    <li><strong>Installing updates:</strong> when you choose to update Pocket Door on your phone, Android asks you
+    once to let Pocket Door install updates for itself.</li>
   </ul>
 
   <h2>What is kept, and where</h2>
-  <p><strong>On the phone:</strong> the keys that link it to your PCs, your choices in Settings, and which text
-  conversations your PC may open. It also keeps a small log of what the app did, which never includes what your
-  notifications, texts, copies or files say or are called (if you tap Contact support, you can choose whether to attach
-  that log to your email). None of this is backed up or copied to a new phone.</p>
-  <p><strong>On the PC:</strong> your settings, the link keys, notification pictures (app icons and senders' pictures,
-  so Windows can show them), and a log of what the app did. The log can include app names and the names of files you
-  move, but not what your messages say. Photos and files you open or drag from the phone are copied to a temporary
-  folder, and ones you save go where you save them.</p>
+  <p><strong>On the phone:</strong> the keys that link it to your PCs, your choices in Settings, which text
+  conversations your PC may open, and up to 20 recent non-password items received from your PC (copied text and the
+  names and locations of received files) so your Recent list stays after a restart. Passwords are never saved to
+  storage, and tapping Clear removes the list. It also keeps a small log of what the app did, which never includes
+  what your notifications, texts, copies or files say or are called (if you tap Contact support, you can choose whether
+  to attach that log to your email). None of this is backed up or copied to a new phone.</p>
+  <p><strong>On the PC:</strong> your settings, the link keys, any files still waiting to send to your phone,
+  notification pictures (app icons and senders' pictures, so Windows can show them), and a log of what the app did.
+  The log can include app names and the names of files you move, but not what your messages say. Photos and files you
+  open or drag from the phone are copied to a temporary folder, and ones you save go where you save them.</p>
 
   <h2>Google's QR code scanner</h2>
   <p>To link a PC, the phone app uses Google's code scanner, part of Google Play services, so Pocket Door never needs your
@@ -129,9 +138,11 @@
   data disclosure</a>.</p>
 
   <h2>Updates</h2>
-  <p>Twice a day, each app asks GitHub, where Pocket Door's downloads are kept, whether there's a newer version, and
-  downloads it when there is. That request carries nothing about you or your phone; like any web request, GitHub sees
-  the address it came from. It's the only time either app contacts anything besides your own phone and PC.</p>
+  <p>Twice a day, each app asks GitHub, where Pocket Door's downloads are kept, whether there's a newer version. On
+  your PC, updates install automatically unless you turn that off in Settings; on your phone, Pocket Door lets you know
+  and only downloads an update when you tap Update. That check carries nothing about you or your phone; like any web
+  request, GitHub sees the address it came from. Aside from Google's QR scanner above, it's the only time either app
+  contacts anything besides your own phone and PC.</p>
 
   <h2>What Pocket Door does not do</h2>
   <ul>
@@ -146,7 +157,7 @@
   <ul>
     <li>Each feature can be turned off in Pocket Door's Settings on the phone, and Android's permissions can be taken back
     in Android's settings.</li>
-    <li>Forget a PC on the phone or the PC to stop them sharing.</li>
+    <li>Unlink a PC on your phone, or unlink your phone on your PC, to stop them sharing.</li>
     <li>Uninstalling Pocket Door from the phone removes everything it kept there. Uninstalling it from the PC removes its
     settings, log and copies there. Files you saved stay where you saved them.</li>
   </ul>
